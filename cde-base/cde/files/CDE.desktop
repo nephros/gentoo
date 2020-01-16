@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=CDE
+Comment=The Common Desktop Environment, the classic UNIX desktop
+Exec=/etc/X11/Sessions/CDE
+TryExec=/etc/X11/Sessions/CDE
+Icon=Dtlogo.pm
+Type=Application

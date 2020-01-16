@@ -28,6 +28,7 @@ app-shells
 app-text
 app-vim
 app-xemacs
+cde-base
 dev-ada
 dev-cpp
 dev-db

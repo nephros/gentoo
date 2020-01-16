@@ -1,0 +1,22 @@
+--- a/lib/tt/bin/dbck/Makefile	2020-01-16 10:43:15.583994018 +0100
++++ b/lib/tt/bin/dbck/Makefile	2020-01-16 10:43:39.778440100 +0100
+@@ -270,7 +270,7 @@
+ LIBMRM = $(top_builddir)/lib/DtMrm/libDtMrm.la
+ LIBOBJS = 
+ LIBPRINT = $(top_builddir)/lib/DtPrint/libDtPrint.la
+-LIBS =   -lcrypt -lm  
++LIBS =   -lcrypt -lm -ltirpc
+ LIBSEARCH = $(top_builddir)/lib/DtSearch/lbiDtSearch.la
+ LIBSVC = $(top_builddir)/lib/DtSvc/libDtSvc.la
+ LIBTERM = $(top_builddir)/lib/DtTerm/libDtTerm.la
+--- a/lib/tt/bin/tt_type_comp/Makefile	2020-01-16 10:47:48.375645300 +0100
++++ b/lib/tt/bin/tt_type_comp/Makefile	2020-01-16 10:47:51.298713956 +0100
+@@ -268,7 +268,7 @@
+ LIBMRM = $(top_builddir)/lib/DtMrm/libDtMrm.la
+ LIBOBJS = 
+ LIBPRINT = $(top_builddir)/lib/DtPrint/libDtPrint.la
+-LIBS =   -lcrypt -lm  
++LIBS =   -lcrypt -lm -ltirpc
+ LIBSEARCH = $(top_builddir)/lib/DtSearch/lbiDtSearch.la
+ LIBSVC = $(top_builddir)/lib/DtSvc/libDtSvc.la
+ LIBTERM = $(top_builddir)/lib/DtTerm/libDtTerm.la
