@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<maintainer type="person">
+		<email>gentoo@nephros.org</email>
+		<name>Peter Gantner</name>
+	</maintainer>
+	<maintainer type="project">
+		<email>proxy-maint@gentoo.org</email>
+		<name>Proxy Maintainers</name>
+	</maintainer>
+<!--
+<longdescription>Long description of the package</longdescription>
+<use>
+	<flag name="aspell">Uses <pkg>app-text/aspell</pkg> for spell checking.
+		Requires an installed dictionary from <cat>app-dicts</cat></flag>
+	<flag name="foo">Enable FOO support</flag>
+	<flag name="bar">Generate BAR things</flag>
+	<flag name="baz">Support the BAZ family of thingamagogs</flag>
+</use>
+-->
+</pkgmetadata>

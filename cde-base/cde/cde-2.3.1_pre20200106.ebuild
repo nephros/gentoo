@@ -16,6 +16,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE="X -doc l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja"
 
 DEPEND="
+	x11-base/xorg-x11
 	x11-libs/libXt
 	x11-libs/libXmu
 	x11-libs/libXft
@@ -28,8 +29,11 @@ DEPEND="
 "
 RDEPEND="${DEPEND}
 	x11-apps/xset
+	sys-apps/xinetd
 	x11-misc/xbitmaps
 	net-libs/libtirpc
+	media-fonts/font-adobe-100dpi[X]
+	media-fonts/font-adobe-75dpi[X]
 	"
 BDEPEND="
 	sys-devel/bison
