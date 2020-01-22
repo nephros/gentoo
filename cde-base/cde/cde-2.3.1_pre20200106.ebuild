@@ -13,37 +13,36 @@ SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cd
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X -doc l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja"
+IUSE="X -xinetd -doc l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples"
 
 DEPEND="
 	x11-base/xorg-x11
-	x11-libs/libXt
-	x11-libs/libXmu
-	x11-libs/libXft
-	x11-libs/libXpm
-	x11-libs/libXaw
-	x11-libs/motif
+	x11-libs/motif[jpeg,xft]
 	media-libs/freetype
 	dev-libs/openssl
-	virtual/jpeg
 "
 RDEPEND="${DEPEND}
-	x11-apps/xset
-	sys-apps/xinetd
+	xinetd? (
+		sys-apps/xinetd
+		net-nds/rpcbind
+	)
 	x11-misc/xbitmaps
-	net-libs/libtirpc
 	media-fonts/font-adobe-100dpi[X]
 	media-fonts/font-adobe-75dpi[X]
 	"
 BDEPEND="
 	sys-devel/bison
+	net-libs/libtirpc
 	app-arch/ncompress
 	x11-apps/bdftopcf
 	app-shells/ksh
 	"
 PATCHES=(
-	"${FILESDIR}"/${P}-Makefile_destinations.patch
-	"${FILESDIR}"/${P}-disable_japanese.patch
+	"${FILESDIR}"/${PV}-Makefile_destinations.patch
+	"${FILESDIR}"/${PV}-disable_japanese.patch
+	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
+	"${FILESDIR}"/${PV}-build_additional.patch
+	"${FILESDIR}"/${PV}-build_dthelpview.patch
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
@@ -68,8 +67,8 @@ src_configure() {
 		$(use_enable l10n_ja japanese) \
 		$my_econf
 
-	eapply "${FILESDIR}"/${P}-link_libtrcp.patch
-	#eapply "${FILESDIR}"/${P}-l10n_ja.patch
+	eapply "${FILESDIR}"/${PV}-link_libtrcp.patch
+	#eapply "${FILESDIR}"/${PV}-l10n_ja.patch
 }
 
 src_compile() {
@@ -79,24 +78,21 @@ src_compile() {
 src_install() {
 	dodir /etc/dt
 	dodir /var/dt
-	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install
-
+	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
+	einfo "emake install finished"
 	# prepare editable system config:
 	dodir /etc/dt/config
 	insinto /etc/dt/config
 	doins -r "${D}"/usr/dt/config/xfonts
 	doins -r "${D}"/usr/dt/config/Xsession.d
-	doins "${D}"/usr/dt/config/dtspcdenv
-	doins "${D}"/usr/dt/config/sys.dtprofile
-	doins "${D}"/usr/dt/config/Xaccess
-	doins "${D}"/usr/dt/config/Xconfig
-	doins "${D}"/usr/dt/config/Xfailsafe
-	doins "${D}"/usr/dt/config/Xreset
-	doins "${D}"/usr/dt/config/Xservers
-	doins "${D}"/usr/dt/config/Xsetup
-	doins "${D}"/usr/dt/config/Xstartup
-	# fix paths:
-	sed -e -i 's#/usr/config#/usr/dt/config#g' "${D}"/usr/dt/config/*
+	local dtcfg
+	dtcfg="dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup"
+	for f in $dtcfg; do
+		einfo "installing /usr/dt/config/${f}"
+		# fix paths, /usr/config we don't have:
+		sed -i -e 's#/usr/config#/usr/dt/config#g' "${D}"/usr/dt/config/${f} || die "sed failed"
+		doins "${D}"/usr/dt/config/${f}
+	done
 
 	# install X and other config things:
 	dosym /usr/dt/bin/dtexec /usr/bin/dtexec
@@ -106,6 +102,22 @@ src_install() {
 	newexe "${FILESDIR}"/Xsession CDE
 	into /usr/share/xsessions
 	doins "${FILESDIR}"/CDE.desktop
-	insinto /etc/xinetd.d
-	doins contrib/xinetd/*
+	if use examples; then
+		dodc -r examples
+	fi
+	if use xinetd; then
+		insinto /etc/xinetd.d
+		doins contrib/xinetd/*
+	fi
+}
+
+pkg_postinst() {
+	if use xinetd; then
+		/sbin/rc-service xinetd --ifstarted reload
+		ewarn 'NOTE: You have enabled the xinetd USE flag.'
+		ewarn 'Two new RPC services, cmsd and ttdbserver'
+		ewarn 'have been installed, and ttdbserver is set to "enabled".'
+		ewarn ''
+		ewarn 'running these services is normally not required, and may pose a security risk.'
+	fi
 }

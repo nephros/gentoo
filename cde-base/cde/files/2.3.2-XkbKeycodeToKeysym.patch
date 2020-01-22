@@ -1,0 +1,99 @@
+diff -Naur a/lib/DtWidget/Editor.c b/lib/DtWidget/Editor.c
+--- a/lib/DtWidget/Editor.c	2019-11-16 03:06:11.000000000 +0100
++++ b/lib/DtWidget/Editor.c	2020-01-15 15:25:16.868473266 +0100
+@@ -3736,7 +3736,7 @@
+     for (mapIndex = 3*pMap->max_keypermod; mapIndex < mapSize; mapIndex++) {
+         /* look only at the first 4 columns of key map */
+         for (keyCol = 0; keyCol < 4; keyCol++) {
+-          keySym = XKeycodeToKeysym(dpy, pMap->modifiermap[mapIndex], keyCol);
++          keySym = XkbKeycodeToKeysym(dpy, pMap->modifiermap[mapIndex], keyCol);
+           if (keySym == XK_Mode_switch)
+              modeSwitchModMask |= 1 << (mapIndex / pMap->max_keypermod);
+         }
+diff -Naur a/programs/dtcalc/motif.c b/programs/dtcalc/motif.c
+--- a/programs/dtcalc/motif.c	2019-11-16 03:06:11.000000000 +0100
++++ b/programs/dtcalc/motif.c	2020-01-15 15:24:18.253768028 +0100
+@@ -2122,7 +2122,7 @@
+       X->kparray[i - X->kcmin] = 0 ;
+       for (j = 0; j < X->keysyms_per_key; ++j)
+         {
+-          ks = XKeycodeToKeysym(X->dpy, i, j) ;
++          ks = XkbKeycodeToKeysym(X->dpy, i, j) ;
+           if (IsKeypadKey(ks))
+             {
+               X->kparray[i - X->kcmin] = 1 ;
+@@ -2142,7 +2142,7 @@
+ 
+   for (i = 0; i < X->keysyms_per_key; ++i)
+     {
+-      ks = XKeycodeToKeysym(X->dpy, keycode, i) ;
++      ks = XkbKeycodeToKeysym(X->dpy, keycode, i) ;
+       if (IsKeypadKey(ks))
+       {
+ #ifdef sun
+diff -Naur a/programs/dtsession/SmSave.c b/programs/dtsession/SmSave.c
+--- a/programs/dtsession/SmSave.c	2019-11-16 03:06:11.000000000 +0100
++++ b/programs/dtsession/SmSave.c	2020-01-15 15:24:26.299256313 +0100
+@@ -1326,7 +1326,7 @@
+ 		return(-1);
+ 	    }
+ 	}
+-	tmpMod = XKeycodeToKeysym(smGD.display, modMap->modifiermap[i], 0);
++	tmpMod = XkbKeycodeToKeysym(smGD.display, modMap->modifiermap[i], 0, 0);
+ 	sprintf(tmpChar,"%ld", tmpMod);
+ 	strcat(resSpec, tmpChar);
+ 	if(i != numLoops)
+diff -Naur a/programs/dtwm/WmCPlace.c b/programs/dtwm/WmCPlace.c
+--- a/programs/dtwm/WmCPlace.c	2019-11-16 03:06:11.000000000 +0100
++++ b/programs/dtwm/WmCPlace.c	2020-01-15 15:24:50.029759971 +0100
+@@ -302,7 +302,7 @@
+     }
+ 
+     /* convert event data to useful key data */
+-    keysym = XKeycodeToKeysym (DISPLAY, pev->keycode, 0);
++    keysym = XkbKeycodeToKeysym (DISPLAY, pev->keycode, 0, 0);
+     control = (pev->state & ControlMask) != 0;
+     big_inc = DisplayWidth(DISPLAY, ACTIVE_PSD->screen) / 20;
+ 
+diff -Naur a/programs/dtwm/WmResParse.c b/programs/dtwm/WmResParse.c
+--- a/programs/dtwm/WmResParse.c	2019-11-16 03:06:11.000000000 +0100
++++ b/programs/dtwm/WmResParse.c	2020-01-15 15:25:06.599018216 +0100
+@@ -1554,7 +1554,7 @@
+ 	{
+ 	    if (map->modifiermap[k])
+ 	    {
+-		KeySym ks = XKeycodeToKeysym(DISPLAY, map->modifiermap[k], 0);
++		KeySym ks = XkbKeycodeToKeysym(DISPLAY, map->modifiermap[k], 0, 0);
+ 		char *nm = XKeysymToString(ks);
+ 
+ 		/* Compare, ignoring the trailing '_L' or '_R' in keysym */
+diff -Naur a/programs/dtwm/WmWinConf.c b/programs/dtwm/WmWinConf.c
+--- a/programs/dtwm/WmWinConf.c	2019-11-16 03:06:11.000000000 +0100
++++ b/programs/dtwm/WmWinConf.c	2020-01-15 15:27:07.619122375 +0100
+@@ -279,7 +279,7 @@
+ 		  keyMultiplier++;
+ 	    }
+ 
+-	    keysym = XKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0);
++	    keysym = XkbKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0, 0);
+ 	    control = (pev->xkey.state & ControlMask) != 0;
+ 	    tmpX = tmpY = 0;
+ 
+@@ -692,7 +692,7 @@
+ 	  keyMult++;
+     }
+ 
+-    keysym = XKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0);
++    keysym = XkbKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0, 0);
+     control = (pev->xkey.state & ControlMask) != 0;
+ 
+     switch (keysym) {
+@@ -4328,7 +4328,7 @@
+ 	  keyMult++;
+     }
+ 
+-    keysym = XKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0);
++    keysym = XkbKeycodeToKeysym (DISPLAY, pev->xkey.keycode, 0);
+     control = (pev->xkey.state & ControlMask) != 0;
+ 
+     switch (keysym) {

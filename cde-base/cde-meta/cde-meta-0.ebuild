@@ -9,10 +9,14 @@ HOMEPAGE="https://sourceforge.net/p/cdesktopenv/wiki/Home/"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE=""
+IUSE="+extras desktop"
 
 DEPEND="cde-base/cde
-	cde-base/desktop-approots
+	extras? ( cde-base/cde-x11-extras-meta )
+	desktop? (
+		cde-base/cde-desktop-extras-meta
+		cde-base/desktop-approots
+	)
 	cde-base/usb-icons"
 RDEPEND="${DEPEND}"
 BDEPEND=""
