@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Mozilla
+Comment=Web Browser (remember, it's spelled Netscape, but it's pronounced M.O.Z.I.L.L.A!
+Exec=mozilla %u
+Icon=netscape
+Terminal=false
+Type=Application
+MimeType=text/html;text/xml;application/xhtml+xml;application/vnd.mozilla.xul+xml;text/mml;x-scheme-handler/http;x-scheme-handler/https;
+Categories=Network;WebBrowser;
+
+StartupNotify=true
