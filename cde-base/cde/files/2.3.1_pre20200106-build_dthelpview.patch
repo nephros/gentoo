@@ -30,18 +30,6 @@
  #include <Dt/HelpDialog.h>
  #include <Dt/HelpQuickD.h>
 
---- a/configure.ac	2020-01-06 04:53:03.000000000 +0100
-+++ b/configure.ac	2020-01-17 11:41:46.491400632 +0100
-@@ -494,6 +494,9 @@
- 
- programs/dsdm/Makefile
- 
-+programs/dthelp/Makefile
-+programs/dthelp/dthelpview/Makefile
-+
- programs/dtmail/Makefile
- programs/dtmail/dtmail/Makefile
- programs/dtmail/MotifApp/Makefile
 --- a/programs/dthelp/Makefile.am	2020-01-06 04:53:03.000000000 +0100
 +++ b/programs/dthelp/Makefile.am	2020-01-17 12:00:15.482181425 +0100
 @@ -1,3 +1,4 @@

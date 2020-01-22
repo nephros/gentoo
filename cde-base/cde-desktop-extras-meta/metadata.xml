@@ -13,7 +13,8 @@
 <longdescription>Long description of the package</longdescription>
 -->
 <use>
-	<flag name="l10n_ja">Enable Japanese language support</flag>
-	<flag name="tools">Install additional tools, like desktop2dt</flag>
+	<flag name="vi">Install a version of the vi editor.</flag>
+	<flag name="calendar">Install <pkg>x11-misc-/xcalendar</pkg>.</flag>
+	<flag name="mozilla">Install a Mozilla browser. If not set, <pkg>www-client/dillo</pkg> will be selected instead.</flag>
 </use>
 </pkgmetadata>

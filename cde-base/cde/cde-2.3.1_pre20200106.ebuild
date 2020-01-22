@@ -13,7 +13,7 @@ SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cd
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X -xinetd -doc l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples"
+IUSE="X -xinetd -doc tools l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples"
 
 DEPEND="
 	x11-base/xorg-x11
@@ -41,8 +41,10 @@ PATCHES=(
 	"${FILESDIR}"/${PV}-Makefile_destinations.patch
 	"${FILESDIR}"/${PV}-disable_japanese.patch
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
-	"${FILESDIR}"/${PV}-build_additional.patch
+	"${FILESDIR}"/${PV}-build_additional_programs.patch
 	"${FILESDIR}"/${PV}-build_dthelpview.patch
+	"${FILESDIR}"/${PV}-build_dtinfo.patch
+	"${FILESDIR}"/${PV}-build_nsgmls.patch
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
@@ -78,6 +80,7 @@ src_compile() {
 src_install() {
 	dodir /etc/dt
 	dodir /var/dt
+	dodir /usr/spool/calendar
 	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
 	einfo "emake install finished"
 	# prepare editable system config:
@@ -100,10 +103,21 @@ src_install() {
 	doins copyright
 	exeinto /etc/X11/Sessions
 	newexe "${FILESDIR}"/Xsession CDE
-	into /usr/share/xsessions
+	insinto /usr/share/xsessions
 	doins "${FILESDIR}"/CDE.desktop
 	if use examples; then
-		dodc -r examples
+		dodoc -r examples
+	fi
+	if use tools; then
+		dobin "${FILESDIR}"/desktop2dt.sh
+		mv "${S}"/contrib/vcal2xapia/vcal2xapia.awk "${S}"/contrib/vcal2xapia/vcal2xapia
+		for tool in desktop2dt vcal2xapia; do
+			dodir /usr/dt/bin/tools/${tool}
+			insinto /usr/dt/bin/tools/${tool}
+			doins contrib/${tool}/README
+			exeinto /usr/dt/bin/tools/${tool}
+			doexe contrib/${tool}/${tool}
+		done
 	fi
 	if use xinetd; then
 		insinto /etc/xinetd.d
@@ -112,6 +126,19 @@ src_install() {
 }
 
 pkg_postinst() {
+	einfo ''
+	einfo 'In order to get antialiased fonts, add the following to your ~/.Xresources file:'
+	einfo '    *.renderTable: variable'
+	einfo '    *.renderTable.variable.fontName: Sans'
+	einfo '    *.renderTable.variable.fontSize: 8'
+	einfo '    *.renderTable.variable.fontType: FONT_IS_XFT'
+	einfo ''
+
+	if use tools; then
+		einfo ''
+		einfo 'You can use the script named desktop2dt.sh to convert existing .desktop files to something CDE can use.'
+		einfo ''
+	fi
 	if use xinetd; then
 		/sbin/rc-service xinetd --ifstarted reload
 		ewarn 'NOTE: You have enabled the xinetd USE flag.'

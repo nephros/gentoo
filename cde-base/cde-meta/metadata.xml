@@ -13,7 +13,9 @@
 <longdescription>Long description of the package</longdescription>
 -->
 <use>
-	<flag name="l10n_ja">Enable Japanese language support</flag>
-	<flag name="tools">Install additional tools, like desktop2dt</flag>
+	<flag name="desktop">Install <pkg>cde-base/cde-desktop-extras-meta</pkg>.</flag>
+	<flag  name="extras">Install <pkg>cde-base/cde-x11-extras-meta</pkg>.</flag>
+	<flag   name="games">Install <pkg>cde-base/cde-games-meta</pkg>.</flag>
+	<flag   name="heirloom-tools">Install <pkg>sys-apps/heirloom-tools</pkg> for ancient UNIX experience.</flag>
 </use>
 </pkgmetadata>

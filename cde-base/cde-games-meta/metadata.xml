@@ -12,8 +12,4 @@
 <!--
 <longdescription>Long description of the package</longdescription>
 -->
-<use>
-	<flag name="l10n_ja">Enable Japanese language support</flag>
-	<flag name="tools">Install additional tools, like desktop2dt</flag>
-</use>
 </pkgmetadata>

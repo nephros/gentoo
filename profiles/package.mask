@@ -576,6 +576,18 @@ net-misc/gnome-remote-desktop
 # v3.6.1 is the latest version without this issue
 >=dev-libs/libsass-3.6.2
 
+# Peter Gantner <gentoo@nephros.org> (2020-01-22)
+# these are from the Gentoo bug, but aren't finished.
+# stuff gets installed to / and so on.  (bug #505542)
+# Use the autotools based 2.3.1 ebuild instead.
+=cde-base/cde-2.2.4
+=cde-base/cde-9999
+
+# Peter Gantner <gentoo@nephros.org> (2020-01-22)
+# major security risks running ancient browsers:
+# unmask only if you're aware of the risk!
+www-client/mozilla
+
 # Lars Wendler <polynomial-c@gentoo.org> (2019-11-14)
 # Breaks archives containing relative paths
 # when being called with --no-absolute-filenames

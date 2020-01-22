@@ -11,9 +11,12 @@
 	</maintainer>
 <!--
 <longdescription>Long description of the package</longdescription>
--->
 <use>
-	<flag name="l10n_ja">Enable Japanese language support</flag>
-	<flag name="tools">Install additional tools, like desktop2dt</flag>
+	<flag name="aspell">Uses <pkg>app-text/aspell</pkg> for spell checking.
+		Requires an installed dictionary from <cat>app-dicts</cat></flag>
+	<flag name="foo">Enable FOO support</flag>
+	<flag name="bar">Generate BAR things</flag>
+	<flag name="baz">Support the BAZ family of thingamagogs</flag>
 </use>
+-->
 </pkgmetadata>
