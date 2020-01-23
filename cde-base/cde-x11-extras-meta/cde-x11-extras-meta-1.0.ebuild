@@ -13,7 +13,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND="
-	dev-util/xxdiff
 	x11-apps/oclock
 	x11-apps/xbiff
 	x11-apps/xclock
