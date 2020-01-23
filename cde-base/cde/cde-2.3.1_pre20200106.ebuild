@@ -3,12 +3,13 @@
 
 EAPI=7
 
-inherit autotools
+inherit autotools font
 
 MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
-SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${P}.zip"
+SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${P}.zip
+	https://raw.githubusercontent.com/dcantrell/cderpm/master/fonts.alias -> ${P}_fonts.alias"
 
 LICENSE="LGPL-2+"
 SLOT="0"
@@ -38,6 +39,7 @@ BDEPEND="
 	app-shells/ksh
 	"
 PATCHES=(
+	"${FILESDIR}"/CVE-2020-2696_VU_308289_6b3224.diff
 	"${FILESDIR}"/${PV}-Makefile_destinations.patch
 	"${FILESDIR}"/${PV}-disable_japanese.patch
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
@@ -48,6 +50,11 @@ PATCHES=(
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
+
+FONTDIR=/usr/share/fonts/cde
+FONT_PN=dtinfo
+FONT_S="${S}"/programs/fontaliases/linux/C
+FONT_SUFFIX=pcf.gz
 
 pkg_pretend() {
 	if use xinetd; then
@@ -97,14 +104,34 @@ src_compile() {
 
 src_install() {
 	dodir /etc/dt
+	keepdir /etc/dt
 	dodir /var/dt
-	dodir /usr/spool/calendar
+	dodir /var/spool/calendar
+	keepdir /var/spool/calendar
 	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
 	einfo "emake install finished"
-	# prepare editable system config:
+
+	einfo "installing fonts at ${FONTDIR}"
+	# font_src_install # this fails becaue of nonexistant DOCS which we "always install" ;)
+	# stuff copied from font.eclass here:
+	pushd "${FONT_S}" > /dev/null
+	insinto "${FONTDIR}"
+	for suffix in ${FONT_SUFFIX}; do
+		doins *.${suffix}
+	done
+		font_xfont_config
+		popd > /dev/null
+	font_fontconfig
+	einfo "font install finished"
+
+	einfo "preparing editable system config in /etc/dt"
 	dodir /etc/dt/config
 	insinto /etc/dt/config
 	doins -r "${D}"/usr/dt/config/xfonts
+	# try the fixed fonts from others
+	#for fa in $(find ${D}/etc/dt/config -name fonts.alias ); do
+	#	cp "${DISTDIR}"/${P}_fonts.alias "${fa}"
+	#done
 	doins -r "${D}"/usr/dt/config/Xsession.d
 	local dtcfg
 	dtcfg="dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup"
@@ -118,17 +145,22 @@ src_install() {
 	# install X and other config things:
 	dosym /usr/dt/bin/dtexec /usr/bin/dtexec
 	insinto /usr/dt
-	doins copyright
+	doins copyright # needed by dtgreeter splash
 	exeinto /etc/X11/Sessions
 	newexe "${FILESDIR}"/Xsession CDE
 	insinto /usr/share/xsessions
 	doins "${FILESDIR}"/CDE.desktop
+	if use doc; then
+		einfo "This ebuild does not support CDE Style documentation or man pages yet."
+		einfo "But you can browse the included guides in PDF format in ${DOCDIR}"
+		dodoc doc/C/pdf/*
+	fi
 	if use examples; then
 		dodoc -r examples
 	fi
 	if use tools; then
 		dobin "${FILESDIR}"/desktop2dt.sh
-		mv "${S}"/contrib/vcal2xapia/vcal2xapia.awk "${S}"/contrib/vcal2xapia/vcal2xapia
+		cp "${S}"/contrib/vcal2xapia/vcal2xapia.awk "${S}"/contrib/vcal2xapia/vcal2xapia
 		for tool in desktop2dt vcal2xapia; do
 			dodir /usr/dt/bin/tools/${tool}
 			insinto /usr/dt/bin/tools/${tool}
