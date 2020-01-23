@@ -2,7 +2,7 @@
 
 d2dt=/usr/dt/bin/tools/desktop2dt/desktop2dt
 
-lst="$1"
+lst="$*"
 if [[ "x$lst" = "x" ]]; then
 	lst="/usr/share/applications/*.desktop"
 fi
@@ -19,14 +19,18 @@ fi
 
 echo "Will create confuguration for the following (enter to list)"
 read dummy
-echo $lst
+echo '==============='
+for s in $lst; do
+echo "${s}"
+done
+echo '==============='
 echo "Continue (Ctrl-C to abort)?"
 read dummy
 
 mkdir -p ${out}/.dt/appmanager/Desktop_Apps
 for s in $lst; do
 	echo "Converting ${s##*/}..."
-	sh ${d2dt} "${s}" || echo "Conversion failed for ${s}"
+	timeout -k 10s 5s sh ${d2dt} "${s}" 2> /dev/null || echo "Conversion failed for ${s}"
 	e=$(basename  ${s##*/} .desktop)
 	touch ${out}/.dt/appmanager/Desktop_Apps/${e}
 	chmod +x ${out}/.dt/appmanager/Desktop_Apps/${e}
