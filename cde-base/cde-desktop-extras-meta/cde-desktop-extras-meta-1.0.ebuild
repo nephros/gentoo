@@ -18,7 +18,6 @@ DEPEND="
 			app-editors/nedit
 			)
 		)
-	app-text/xpdf
 	cde-base/desktop-approots
 	cde-base/usb-icons
 	emacs? ( || ( app-editors/emacs:*[motif] app-editors/xemacs[motif] ) )
