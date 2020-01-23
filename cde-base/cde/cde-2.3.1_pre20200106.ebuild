@@ -49,6 +49,24 @@ PATCHES=(
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
 
+pkg_pretend() {
+	if use xinetd; then
+		ewarn ''
+		ewarn 'BIG FAT WARNING: You have enabled the xinetd USE flag.'
+		ewarn 'This will install CDE RPC services (cmsd and ttdbserver)'
+		ewarn ''
+		ewarn 'Running these services may pose a security risk, and is normally not required.'
+		ewarn 'See the Security section in the Wiki: https://sourceforge.net/p/cdesktopenv/wiki/Home/'
+		ewarn ''
+		ewarn 'Unset the xinetd USE flag for this package to get rid of this warning.'
+		ewarn ''
+		if [[ "x${GIVE_ME_INSECURE_RPC}" = "x" ]]; then
+			ewarn 'If you really want this, set the GIVE_ME_INSECURE_RPC variable to any value and restart the emerge.'
+			die 'Insecure installation prevented. See the warnings above.'
+		fi
+	fi
+}
+
 src_prepare() {
 	default
 	sed -i -e "s#docsdir = \$(CDE_INSTALLATION_TOP)#docsdir = /usr/share/doc/${P}#" Makefile.am || die 'sed failed'
@@ -127,7 +145,7 @@ src_install() {
 
 pkg_postinst() {
 	einfo ''
-	einfo 'In order to get antialiased fonts, add the following to your ~/.Xresources file:'
+	einfo 'In order to get prettier fonts via Xft, add the following to your ~/.Xresources file:'
 	einfo '    *.renderTable: variable'
 	einfo '    *.renderTable.variable.fontName: Sans'
 	einfo '    *.renderTable.variable.fontSize: 8'
@@ -139,12 +157,19 @@ pkg_postinst() {
 		einfo 'You can use the script named desktop2dt.sh to convert existing .desktop files to something CDE can use.'
 		einfo ''
 	fi
+
 	if use xinetd; then
-		/sbin/rc-service xinetd --ifstarted reload
-		ewarn 'NOTE: You have enabled the xinetd USE flag.'
-		ewarn 'Two new RPC services, cmsd and ttdbserver'
-		ewarn 'have been installed, and ttdbserver is set to "enabled".'
-		ewarn ''
-		ewarn 'running these services is normally not required, and may pose a security risk.'
+		if [[ ! "x${GIVE_ME_INSECURE_RPC}" = "x" ]]; then
+			ewarn ''
+			ewarn 'You have chosen to ignore the security concerns, and so'
+			ewarn 'two new RPC services, cmsd and ttdbserver, have been installed to /etc/xinetd.d.'
+			ewarn 'ttdbserver is set to "enabled".'
+			ewarn ''
+			ewarn 'Restart xinetd for the changes to take effect'
+			ewarn ''
+			ewarn 'Reminder: Running these services is normally not required.'
+			ewarn 'See the Security section in the Wiki: https://sourceforge.net/p/cdesktopenv/wiki/Home/'
+			ewarn ''
+		fi
 	fi
 }

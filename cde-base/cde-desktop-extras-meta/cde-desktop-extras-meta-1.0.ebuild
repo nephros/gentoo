@@ -18,6 +18,8 @@ DEPEND="
 			app-editors/nedit
 			)
 		)
+	!mozilla? ( www-client/dillo )
+	calendar? ( x11-misc/xcalendar[motif] app-misc/remind[tk] )
 	cde-base/desktop-approots
 	cde-base/usb-icons
 	emacs? ( || ( app-editors/emacs:*[motif] app-editors/xemacs[motif] ) )
@@ -25,8 +27,6 @@ DEPEND="
 	media-sound/xmms2
 	mozilla? ( || ( www-client/mozilla www-client/netscape-navigator www-client/netscape-navigator-bin www-client/seamonkey-bin www-client/seamonkey ) )
 	vi? ( || ( app-editors/vim[X] app-editors/gvim[motif] app-editors/xvile ) )
-	!mozilla? ( www-client/dillo )
-	calendar? ( x11-misc/xcalendar[motif] )
 "
 RDEPEND="${DEPEND}"
 BDEPEND=""
