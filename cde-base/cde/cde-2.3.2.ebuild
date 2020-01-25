@@ -3,7 +3,7 @@
 
 EAPI=7
 
-inherit autotools font
+inherit autotools
 
 MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
@@ -40,7 +40,7 @@ BDEPEND="
 PATCHES=(
 	"${FILESDIR}"/2.3.1_pre20200106-to-${PV}.patch
 	"${FILESDIR}"/CVE-2020-2696_VU_308289_6b3224.patch
-	"${FILESDIR}"/${PV}-Makefile_destinations.patch
+	"${FILESDIR}"/${PV}-fix_prefix_vs_top_dir.patch
 	"${FILESDIR}"/${PV}-disable_japanese.patch
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
 	"${FILESDIR}"/${PV}-build_additional_programs.patch
@@ -50,11 +50,6 @@ PATCHES=(
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
-
-FONTDIR=/usr/share/fonts/cde
-FONT_PN=dtinfo
-FONT_S="${S}"/programs/fontaliases/linux/C
-FONT_SUFFIX=pcf.gz
 
 pkg_pretend() {
 	if use xinetd; then
@@ -95,56 +90,51 @@ src_configure() {
 		$my_econf
 
 	eapply "${FILESDIR}"/${PV}-link_libtrcp.patch
-	#eapply "${FILESDIR}"/${PV}-l10n_ja.patch
+}
+
+src_compile() {
+	# keep the _TOP variables defined in case of unclean source files:
+	emake CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt
 }
 
 src_install() {
 	dodir /etc/dt
-	keepdir /etc/dt
-	dodir /var/dt
-	dodir /var/spool/calendar
+	keepdir /var/dt
 	keepdir /var/spool/calendar
-	emake -j1 DESTDIR="${D}" install || die "emake install failed."
-	einfo "emake install finished"
+	# keep the _TOP variables defined in case of unclean source files:
+	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
 
-	einfo "installing fonts at ${FONTDIR}"
-	# font_src_install # this fails becaue of nonexistant DOCS which we "always install" ;)
-	# stuff copied from font.eclass here:
-	pushd "${FONT_S}" > /dev/null
-	insinto "${FONTDIR}"
-	for suffix in ${FONT_SUFFIX}; do
-		doins *.${suffix}
-	done
-		font_xfont_config
-		popd > /dev/null
-	font_fontconfig
-	einfo "font install finished"
+	dodoc "${FILESDIR}"/README_Gentoo.md
 
 	# Currently, the sources and autotools are undecided and inconsistent
 	# in where to expect stuff.
 	# There's CDE_INSTALLATION_TOP (which would be /usr/dt), and ${prefix}, which usually is /usr
 	# Let's copy almost everything into /etc, that makes things work in most cases.
 	#
-	einfo "preparing editable system config in /etc/dt"
-	dodir /etc/dt/config
-	insinto /etc/dt/config
-	doins -r "${D}"/usr/dt/config/xfonts
-	doins -r "${D}"/usr/dt/config/Xsession.d
-	local dtcfg
-	dtcfg="dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup"
-	for f in $dtcfg; do
-		einfo "installing /etc/dt/config/${f}"
+	for f in dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup; do
 		# fix paths, /usr/config we don't have:
 		sed -i -e 's#/usr/config#/usr/dt/config#g' "${D}"/usr/dt/config/${f} || die "sed failed"
-		doins "${D}"/usr/dt/config/${f}
 	done
-	# this makes FrontPanel, Actions and Icons work
+	dodir /etc/dt/config
 	dodir /etc/dt/appconfig
-	insinto /etc/dt/appconfig
-	doins -r "${D}"/usr/dt/appconfig/icons
-	doins -r "${D}"/usr/dt/appconfig/types
-
-	dodoc "${FILESDIR}"/README_Gentoo.md
+	dodir /etc/dt/app-defaults
+	#insinto /etc/dt/config
+	#doins -r "${D}"/usr/dt/config/*
+	#insinto /etc/dt/
+	# TODO: dtwm definitely only searches in /usr/app-defaults and /etc/dt/app-defaults, but never in /ust/dt
+	#doins -r "${D}"/usr/dt/app-defaults
+	# this makes FrontPanel, Actions and Icons work
+	# TODO: dtwm definitely only searches in /usr/config and /etc/dt/app-defaults, but never in /ust/dt
+	#for d in icons tttypes types; do
+	#	insinto /etc/dt/appconfig/
+	#	doins -r "${D}"/usr/dt/appconfig/${d}
+	#done
+	for d in backdrops palettes; do
+		dodir /etc/dt/${d}
+		for f in "${D}"/usr/dt/share/${d}/*; do
+			dosym /usr/dt/share/${d}/${f##*/} /etc/dt/${d}/${f##*/}
+		done
+	done
 	# install X.org and other system config things:
 	dosym /usr/dt/bin/dtexec /usr/bin/dtexec
 	insinto /usr/dt
@@ -154,8 +144,10 @@ src_install() {
 	insinto /usr/share/xsessions
 	doins "${FILESDIR}"/CDE.desktop
 	if use doc; then
-		einfo "This version does not support CDE Style documentation or man pages yet."
+		einfo ''
+		einfo 'This version does not support CDE Style documentation or man pages yet.'
 		einfo "But you can browse the included guides in PDF format in ${DOCDIR}"
+		einfo ''
 		dodoc doc/C/pdf/*
 	fi
 	if use examples; then
@@ -180,7 +172,7 @@ src_install() {
 
 pkg_postinst() {
 	einfo 'There are several known issues with the current ebuild.'
-	einfo 'You are encouraged to read ${DOCDIR}/README_Gentoo.md about them.'
+	einfo "You are encouraged to read ${DOCDIR}/README_Gentoo.md about them."
 	einfo ''
 	einfo 'They should be fixed as time passes. Patches/Pull requests welcome...'
 

@@ -1,8 +1,0 @@
---- a/programs/dtfile/Makefile.am	2020-01-16 12:51:04.961070850 +0100
-+++ b/programs/dtfile/Makefile.am	2020-01-16 13:35:39.458780947 +0100
-@@ -1,4 +1,4 @@
--configdir = ${prefix}/config/C
-+configdir = $(CDE_INSTALLATION_TOP)/config/C
- 
- SUBDIRS = dtcopy
- 

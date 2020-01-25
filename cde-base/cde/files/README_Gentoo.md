@@ -6,6 +6,10 @@
  * The SubPanel commands in the Front Panel do not work and cause the Panel to not appear.  
    As a workaround, copy /etc/dt/appconfig/types/C/dtwm.fp ~/.dt/types, and remove all SubPanels and things which use them as containers.
 
+ * The above might have to do with locale settings. Note that CDE expects UTF8-based locales to be specified as "xx\_YY.UTF-8", while some Gentoo tools export "xx\_YY.utf8".
+   You might want to export LANG=en\_US.UTF-8, or as a failsafe, LANG=C in e.g. ~/.dtprofile.
+
+
 ## Tips & Tricks
 
 ### The CDE Wiki and other resources

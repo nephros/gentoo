@@ -1,0 +1,133 @@
+diff -Naur a/lib/DtHelp/il/Makefile.am b/lib/DtHelp/il/Makefile.am
+--- a/lib/DtHelp/il/Makefile.am	2020-01-25 19:07:26.808596167 +0100
++++ b/lib/DtHelp/il/Makefile.am	2020-01-25 21:00:30.998436432 +0100
+@@ -2,7 +2,7 @@
+ 
+ noinst_LTLIBRARIES = libil.la
+ 
+-libil_la_CFLAGS = -I.. -DDTLIB -DCDE_INSTALLATION_TOP='"${prefix}"' \
++libil_la_CFLAGS = -I.. -DDTLIB -DCDE_INSTALLATION_TOP='"$(CDE_INSTALLATION_TOP)"' \
+ 		  -DCDE_CONFIGURATION_TOP='"$(CDE_CONFIGURATION_TOP)"' \
+ 		  @DT_INCDIR@ @DTI_INCDIR@
+ 
+diff -Naur a/lib/DtHelp/Makefile.am b/lib/DtHelp/Makefile.am
+--- a/lib/DtHelp/Makefile.am	2020-01-25 19:07:26.808596167 +0100
++++ b/lib/DtHelp/Makefile.am	2020-01-25 21:00:51.834972868 +0100
+@@ -9,7 +9,7 @@
+ lib_LTLIBRARIES = libDtHelp.la
+ 
+ libDtHelp_la_CFLAGS = -I./il -I./jpeg -I../DtSvc/DtUtil2 -DDTLIB \
+-		      -DCDE_INSTALLATION_TOP='"${prefix}"' \
++		      -DCDE_INSTALLATION_TOP='"$(CDE_INSTALLATION_TOP)"' \
+ 		      -DCDE_CONFIGURATION_TOP='"$(CDE_CONFIGURATION_TOP)"' \
+ 		      @DT_INCDIR@ @DTI_INCDIR@
+ 
+diff -Naur a/lib/DtSearch/raima/Makefile.am b/lib/DtSearch/raima/Makefile.am
+--- a/lib/DtSearch/raima/Makefile.am	2020-01-25 19:07:26.828596070 +0100
++++ b/lib/DtSearch/raima/Makefile.am	2020-01-25 21:01:12.024846764 +0100
+@@ -4,7 +4,7 @@
+ 
+ libraima_la_LIBADD = -lc -lm
+ 
+-libraima_la_CFLAGS = -DCDE_INSTALLATION_TOP=\"${prefix}\" \
++libraima_la_CFLAGS = -DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\" \
+ 		     @DT_INCDIR@ \
+ 		     -DCDE_CONFIGURATION_TOP=\"$(CDE_CONFIGURATION_TOP)\" \
+ 		     -DNO_TRANS -DUNIX -D_POSIX_SOURCE -DMULTIBYTE
+diff -Naur a/lib/DtSvc/Makefile.am b/lib/DtSvc/Makefile.am
+--- a/lib/DtSvc/Makefile.am	2020-01-25 19:07:26.888595779 +0100
++++ b/lib/DtSvc/Makefile.am	2020-01-25 21:01:34.914703896 +0100
+@@ -6,7 +6,7 @@
+ 
+ # USe CPPFLAGS so it will apply to both C and C++ components
+ libDtSvc_la_CPPFLAGS = -I./include -DMULTIBYTE -DNLS16 -I../include \
+-	@DT_INCDIR@ -DCDE_INSTALLATION_TOP=\"${prefix}\" \
++	@DT_INCDIR@ -DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\" \
+        -DCDE_CONFIGURATION_TOP=\"$(CDE_CONFIGURATION_TOP)\"
+ 
+ if SOLARIS
+diff -Naur a/lib/DtWidget/Makefile.am b/lib/DtWidget/Makefile.am
+--- a/lib/DtWidget/Makefile.am	2020-01-25 19:07:26.928595585 +0100
++++ b/lib/DtWidget/Makefile.am	2020-01-25 19:10:29.287710224 +0100
+@@ -1,4 +1,4 @@
+-unixdir = ${prefix}/app-defaults/C
++unixdir = $(CDE_INSTALLATION_TOP)/app-defaults/C
+ 
+ MAINTAINERCLEANFILES = Makefile.in
+ 
+diff -Naur a/programs/dtfile/Makefile.am b/programs/dtfile/Makefile.am
+--- a/programs/dtfile/Makefile.am	2020-01-25 19:07:27.348593547 +0100
++++ b/programs/dtfile/Makefile.am	2020-01-25 20:59:45.522054353 +0100
+@@ -1,4 +1,4 @@
+-configdir = ${prefix}/config/C
++configdir = $(CDE_INSTALLATION_TOP)/config/C
+ 
+ SUBDIRS = dtcopy
+ 
+@@ -12,7 +12,7 @@
+ dist_bin_SCRIPTS = dtfile_error
+ 
+ dtfile_CPPFLAGS = -I./dtcopy -DSHAPE -D_ILS_MACROS -DSUN_PERF \
+-		-DCDE_INSTALLATION_TOP=\"${prefix}\" \
++		-DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\" \
+ 		-DCDE_CONFIGURATION_TOP=\"$(CDE_CONFIGURATION_TOP)\" \
+ 		-DKORNSHELL=\"$(KSH)\" $(FREETYPE_CFLAGS)
+ 
+diff -Naur a/programs/dthelp/dthelpgen/Makefile.am b/programs/dthelp/dthelpgen/Makefile.am
+--- a/programs/dthelp/dthelpgen/Makefile.am	2020-01-25 19:07:27.385260036 +0100
++++ b/programs/dthelp/dthelpgen/Makefile.am	2020-01-25 21:00:08.965240917 +0100
+@@ -4,7 +4,7 @@
+ 
+ bin_SCRIPTS = dthelpgen.dtsh
+ 
+-dthelpgen_CPPFLAGS = -I.. -DCDE_INSTALLATION_TOP=\"${prefix}\" \
++dthelpgen_CPPFLAGS = -I.. -DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\" \
+ 		   -DCDE_CONFIGURATION_TOP=\"$(CDE_CONFIGURATION_TOP)\"
+ 
+ dthelpgen_LDADD = $(LIBHELP) $(LIBSVC) $(LIBTT) $(XTOOLLIB) ${X_LIBS}
+diff -Naur a/programs/dtinfo/dtinfo/install/lib/bitmaps/Makefile.am b/programs/dtinfo/dtinfo/install/lib/bitmaps/Makefile.am
+--- a/programs/dtinfo/dtinfo/install/lib/bitmaps/Makefile.am	2020-01-25 19:07:28.715253584 +0100
++++ b/programs/dtinfo/dtinfo/install/lib/bitmaps/Makefile.am	2020-01-25 19:10:29.287710224 +0100
+@@ -1,7 +1,7 @@
+-icondir = ${prefix}/appconfig/icons/C
++icondir = $(CDE_INSTALLATION_TOP)/appconfig/icons/C
+ 
+ if JAPANESE
+-jdir = ${prefix}/appconfig/icons/ja
++jdir = $(CDE_INSTALLATION_TOP)/appconfig/icons/ja
+ 
+ dist_j_DATA = bomb \
+               bomb16 \
+diff -Naur a/programs/dtksh/ksh93/Makefile.am b/programs/dtksh/ksh93/Makefile.am
+--- a/programs/dtksh/ksh93/Makefile.am	2020-01-25 19:07:30.005247326 +0100
++++ b/programs/dtksh/ksh93/Makefile.am	2020-01-25 20:59:25.895510640 +0100
+@@ -35,7 +35,7 @@
+         -DPROFILEPATH=\"$(CDE_CONFIGURATION_TOP)/config/profile\" \
+         -DSUIDPROFILEPATH=\"$(CDE_CONFIGURATION_TOP)/config/suid_profile\" \
+         -DSUIDEXECPATH=\"${prefix}/bin/suid_exec\" \
+-        -DCDE_INSTALLATION_TOP=\"${prefix}\"
++        -DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\"
+ 
+ CCFLAGS = $(CDEBUGFLAGS) $(SUIDEXECDEFINES) $(STD_DEFINES) $(ANSI_DEFINES)
+ ICCFLAGS = $(IFFECDEBUGFLAGS) $(STD_DEFINES) $(ANSI_DEFINES)
+diff -Naur a/programs/dtwm/Makefile.am b/programs/dtwm/Makefile.am
+--- a/programs/dtwm/Makefile.am	2020-01-25 19:07:31.075242135 +0100
++++ b/programs/dtwm/Makefile.am	2020-01-25 20:58:45.962427718 +0100
+@@ -9,7 +9,7 @@
+ CLEANFILES = sys.dtwmrc Dtwm.defs
+ 
+ AM_CPPFLAGS = -DLARGECURSORS -DR2_COMPAT -DOPAQUE -DSHAPE -DUNMAP_ON_RESTART \
+-	      -DBATCH_DRAG_REQUESTS -DCDE_INSTALLATION_TOP=\"${prefix}\" \
++	      -DBATCH_DRAG_REQUESTS -DCDE_INSTALLATION_TOP=\"$(CDE_INSTALLATION_TOP)\" \
+ 	      -DCDE_CONFIGURATION_TOP=\"$(CDE_CONFIGURATION_TOP)\"
+ 
+ dtwm_LDADD = $(DTCLIENTLIBS) -lXext $(XTOOLLIB)
+@@ -40,7 +40,7 @@
+ 
+ dtfplist_SOURCES = Print.c Parse.c DataBaseLoad.c WmParse.c Session.c
+ 
+-SCRIPTFLAGS = -DCDE_INSTALLATION_TOP=${prefix} \
++SCRIPTFLAGS = -DCDE_INSTALLATION_TOP=$(CDE_INSTALLATION_TOP) \
+               -DCDE_CONFIGURATION_TOP=$(CDE_CONFIGURATION_TOP)
+ 
+ Dtwm.defs: Dtwm.defs.src
