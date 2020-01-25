@@ -1,0 +1,86 @@
+--- a/configure.ac	2020-01-23 17:56:03.845427862 +0100
++++ b/configure.ac	2020-01-23 17:56:34.605254030 +0100
+@@ -1,4 +1,4 @@
+-AC_INIT([cde-desktop], [2.3.1], [jon@radscan.com])
++AC_INIT([cde-desktop], [2.3.2], [gentoo@nephros.org])
+ AC_CONFIG_HEADERS([include/autotools_config.h])
+ AC_CONFIG_MACRO_DIRS([m4])
+ AM_INIT_AUTOMAKE([foreign subdir-objects])
+diff --git a/HISTORY b/HISTORY
+index fe21bf7f..a662d79e 100644
+--- a/HISTORY
++++ b/HISTORY
+@@ -5,6 +5,15 @@ use 'git log', or peruse the commit history at:
+ 
+ https://sourceforge.net/p/cdesktopenv/code/commit_browser
+ 
++#######################################################################
++### 2.3.2 (stable) 01/14/2020
++
++The only change in this version from 2.3.1 is a fix for CERT
++CVE-2020-2692, a potential privilege escalation exploit in dtsession.
++There is POC for Solaris.  Exploiting this on our CDE would be
++significantly more difficult, but we fixed them just the same.
++
++
+ #######################################################################
+ ### 2.3.1 (stable) 11/15/2019
+ 
+diff --git a/copyright b/copyright
+index 401e1474..167c32be 100644
+--- a/copyright
++++ b/copyright
+@@ -1,10 +1,10 @@
+ 
+ 
+ 
+-		Common Desktop Environment Version 2.3.1a (devel)
++		Common Desktop Environment Version 2.3.2
+ 
+ (c) Copyright 1993-2012 The Open Group
+-(c) Copyright 2012-2020 CDE Project contributors, see CONTRIBUTORS for details
++(c) Copyright 2012-2020 CDE Project contributors
+ 
+ Project Website: http://cdesktopenv.sourceforge.net/
+ 
+diff --git a/doc/common/help/HELPEnt.sgm b/doc/common/help/HELPEnt.sgm
+index 7fd21043..6fd3db12 100644
+--- a/doc/common/help/HELPEnt.sgm
++++ b/doc/common/help/HELPEnt.sgm
+@@ -1,8 +1,8 @@
+ <!-- $TOG: HELPEnt.sgm /main/12 1999/10/12 09:35:15 mgreess $ -->
+-<!ENTITY CDEcopyright "<GlossTerm Role=nogloss>Common Desktop Environment 2.3.1a</GlossTerm>,
++<!ENTITY CDEcopyright "<GlossTerm Role=nogloss>Common Desktop Environment 2.3.2</GlossTerm>,
+ 
+ &copy; Copyright 1993-2012 The Open Group
+-&copy; Copyright 2012-2020 CDE Project contributors, see CONTRIBUTORS for details
++&copy; Copyright 2012-2020 CDE Project contributors
+ 
+ Project Website: http://cdesktopenv.sourceforge.net/
+ 
+diff --git a/lib/tt/bin/ttauth/ttauth.man b/lib/tt/bin/ttauth/ttauth.man
+index 1e5d1c71..56f6df67 100644
+--- a/lib/tt/bin/ttauth/ttauth.man
++++ b/lib/tt/bin/ttauth/ttauth.man
+@@ -18,7 +18,7 @@
+ .\" not be used in advertising or otherwise to promote the sale, use or
+ .\" other dealings in this Software without prior written authorization
+ .\" from The Open Group.
+-.TH TTAUTH 1 "Release 2.3.1a" "CDE"
++.TH TTAUTH 1 "Release 2.3.2" "CDE"
+ .SH NAME
+ ttauth \- ToolTalk authority file utility
+ .SH SYNOPSIS
+diff --git a/lib/tt/tooltalk.tmpl b/lib/tt/tooltalk.tmpl
+index 51d58699..fb2015ca 100644
+--- a/lib/tt/tooltalk.tmpl
++++ b/lib/tt/tooltalk.tmpl
+@@ -6,7 +6,7 @@
+ /* TT_VERSION defines the version string which is imbedded in all the */
+ /* binaries and shipped libraries. */
+ 
+-TT_VERSION = "CDE Version 2.3.1a"
++TT_VERSION = "CDE Version 2.3.2"
+ TT_VERSION_DEFINE = -DTT_VERSION_STRING=\"$(TT_VERSION)\"
+ 
+ 

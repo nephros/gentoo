@@ -38,7 +38,8 @@ BDEPEND="
 	app-shells/ksh
 	"
 PATCHES=(
-	"${FILESDIR}"/CVE-2020-2696_VU_308289_6b3224.diff
+	"${FILESDIR}"/2.3.1_pre20200106-to-${PV}.patch
+	"${FILESDIR}"/CVE-2020-2696_VU_308289_6b3224.patch
 	"${FILESDIR}"/${PV}-Makefile_destinations.patch
 	"${FILESDIR}"/${PV}-disable_japanese.patch
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch

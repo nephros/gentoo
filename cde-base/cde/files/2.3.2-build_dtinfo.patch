@@ -1,0 +1,36 @@
+--- /dev/null	2020-01-07 00:00:19.355873359 +0100
++++ programs/dtinfo/dtinfogen/mmdb/src/Makefile.am	2020-01-18 15:33:30.009042511 +0100
+@@ -0,0 +1,15 @@
++MAINTAINERCLEANFILES = Makefile.in
++
++bin_PROGRAMS = dbdrv restore drvdb_c_api
++
++#dbdrv_LDADD = $(LIBTT) ${X_LIBS}
++dbdrv_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++dbdrv_SOURCES = main.C
++
++#dbdrv_c_api_LDADD = $(LIBTT) ${X_LIBS}
++dbdrv_c_api_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++dbdrv_c_api_SOURCES = main_c_api.c
++
++#restore_LDADD = $(LIBTT) ${X_LIBS}
++restore_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++restore_SOURCES = restore.C
+--- /dev/null	1970-01-01 01:00:00.000000000 +0100
++++ b/programs/dtinfo/dtinfogen/mmdb/src/Makefile.am	2020-01-18 15:33:30.009042511 +0100
+@@ -0,0 +1,15 @@
++MAINTAINERCLEANFILES = Makefile.in
++
++bin_PROGRAMS = dbdrv restore drvdb_c_api
++
++#dbdrv_LDADD = $(LIBTT) ${X_LIBS}
++dbdrv_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++dbdrv_SOURCES = main.C
++
++#dbdrv_c_api_LDADD = $(LIBTT) ${X_LIBS}
++dbdrv_c_api_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++dbdrv_c_api_SOURCES = main_c_api.c
++
++#restore_LDADD = $(LIBTT) ${X_LIBS}
++restore_CPPFLAGS = -I../../../DtMmdb -I../../../DtMmdb/dti_excs/
++restore_SOURCES = restore.C
