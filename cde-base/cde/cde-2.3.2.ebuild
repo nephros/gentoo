@@ -44,7 +44,7 @@ PATCHES=(
 	"${FILESDIR}"/${PV}-disable_japanese.patch
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
 	"${FILESDIR}"/${PV}-build_additional_programs.patch
-	"${FILESDIR}"/${PV}-build_dthelpview.patch
+	"${FILESDIR}"/${PV}-build_dthelp.patch
 	"${FILESDIR}"/${PV}-build_dtinfo.patch
 	"${FILESDIR}"/${PV}-build_nsgmls.patch
 )
@@ -98,46 +98,31 @@ src_compile() {
 }
 
 src_install() {
-	dodir /etc/dt
+	keepdir /etc/dt
+	dodir /etc/dt/config
+	dodir /etc/dt/config/Xsession.d
+	dodir /etc/dt/appconfig
+	dodir /etc/dt/app-defaults
 	keepdir /var/dt
+	dosym /var/tmp/ /var/dt/tmp
 	keepdir /var/spool/calendar
 	# keep the _TOP variables defined in case of unclean source files:
 	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
 
-	dodoc "${FILESDIR}"/README_Gentoo.md
-
-	# Currently, the sources and autotools are undecided and inconsistent
-	# in where to expect stuff.
-	# There's CDE_INSTALLATION_TOP (which would be /usr/dt), and ${prefix}, which usually is /usr
-	# Let's copy almost everything into /etc, that makes things work in most cases.
-	#
+	# fix paths, /usr/config we don't have:
 	for f in dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup; do
-		# fix paths, /usr/config we don't have:
 		sed -i -e 's#/usr/config#/usr/dt/config#g' "${D}"/usr/dt/config/${f} || die "sed failed"
 	done
-	dodir /etc/dt/config
-	dodir /etc/dt/appconfig
-	dodir /etc/dt/app-defaults
-	#insinto /etc/dt/config
-	#doins -r "${D}"/usr/dt/config/*
-	#insinto /etc/dt/
-	# TODO: dtwm definitely only searches in /usr/app-defaults and /etc/dt/app-defaults, but never in /ust/dt
-	#doins -r "${D}"/usr/dt/app-defaults
-	# this makes FrontPanel, Actions and Icons work
-	# TODO: dtwm definitely only searches in /usr/config and /etc/dt/app-defaults, but never in /ust/dt
-	#for d in icons tttypes types; do
-	#	insinto /etc/dt/appconfig/
-	#	doins -r "${D}"/usr/dt/appconfig/${d}
-	#done
-	for d in backdrops palettes; do
-		dodir /etc/dt/${d}
-		for f in "${D}"/usr/dt/share/${d}/*; do
-			dosym /usr/dt/share/${d}/${f##*/} /etc/dt/${d}/${f##*/}
-		done
-	done
+	# Some eyecandy and custmizations:
+	dodoc "${FILESDIR}"/README_Gentoo.md
+	exeinto /etc/dt/config/Xsession.d
+	doexe "${FILESDIR}"/0010.dtpaths
+	insinto /etc/dt/backdrops
+	doins "${FILESDIR}"/*.pm
 	# install X.org and other system config things:
 	dosym /usr/dt/bin/dtexec /usr/bin/dtexec
 	insinto /usr/dt
+	newbin "${FILESDIR}"/startcde.sh startcde
 	doins copyright # needed by dtgreeter splash
 	exeinto /etc/X11/Sessions
 	newexe "${FILESDIR}"/Xsession CDE

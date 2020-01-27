@@ -1,11 +1,13 @@
---- a/configure.ac	2020-01-06 04:53:03.000000000 +0100
-+++ b/configure.ac	2020-01-18 22:13:31.264887940 +0100
-@@ -494,6 +494,21 @@
+--- a/configure.ac	2020-01-25 19:07:21.265289725 +0100
++++ b/configure.ac	2020-01-27 08:44:10.455457862 +0100
+@@ -494,6 +494,23 @@
  
  programs/dsdm/Makefile
  
 +programs/dthelp/Makefile
 +programs/dthelp/dthelpview/Makefile
++programs/dthelp/dthelpgen/Makefile
++programs/dthelp/dthelpdemo/Makefile
 +
 +programs/dtinfo/Makefile
 +programs/dtinfo/dtinfogen/Makefile
@@ -22,14 +24,4 @@
  programs/dtmail/Makefile
  programs/dtmail/dtmail/Makefile
  programs/dtmail/MotifApp/Makefile
---- a/programs/Makefile.am	2020-01-06 04:53:03.000000000 +0100
-+++ b/programs/Makefile.am	2020-01-18 15:04:17.260678184 +0100
-@@ -5,6 +5,6 @@
- 	dtaction dtspcd dtscreen dtcm dtsearchpath palettes \
- 	dtappintegrate dtprintegrate dtconfig dtcreate dtprintinfo fontaliases \
- 	dtdspmsg dtimsstart dtpdm dtsr dtpdmd types \
--	tttypes util dtopen localized
-+	tttypes util dtopen localized dthelp nsgmls
- 
--# NOTYET = dthelp dtksh dtappbuilder dtdocbook dtinfo nsgmls ttsnoop 
-+# NOTYET = dtksh dtappbuilder dtdocbook dtinfo ttsnoop 
+

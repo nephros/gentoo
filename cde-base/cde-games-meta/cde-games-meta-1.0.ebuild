@@ -14,13 +14,17 @@ LICENSE="metapackage"
 
 RDEPEND="${DEPEND}
 	games-action/battalion
-	games-simulation/micropolis
+	games-action/powermanga
+	games-action/supertuxkart
+	games-arcade/lbreakout2
+	games-arcade/supertux
 	games-arcade/xbill[-gtk]
+	games-arcade/xgalaga
 	games-arcade/xlennart[-gtk,motif]
+	games-board/xboard[-gtk]
+	games-simulation/micropolis
 	x11-misc/3dfb
 	x11-misc/3dfm
-	games-arcade/xgalaga
-	games-board/xboard[-gtk]
 	x11-misc/xaos[X]
 	x11-misc/xfractint
 "
