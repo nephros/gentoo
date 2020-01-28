@@ -8,7 +8,7 @@ inherit autotools
 MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
-SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${P}.zip"
+SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${P}_${MY_COMMIT}.zip"
 
 LICENSE="LGPL-2+"
 SLOT="0"
@@ -45,13 +45,17 @@ PATCHES=(
 	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
 	"${FILESDIR}"/${PV}-build_additional_programs.patch
 	"${FILESDIR}"/${PV}-build_dthelp.patch
-	"${FILESDIR}"/${PV}-build_dtinfo.patch
 	"${FILESDIR}"/${PV}-build_nsgmls.patch
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
 
 pkg_pretend() {
+	einfo ''
+	einfo "NOTE: In case the download fails, please go to https://sourceforge.net/p/cdesktopenv/code/ci/${MY_COMMIT}/tree/"
+	einfo 'and click the "Download Snapshot" link. Then run emerge again.'
+	einfo 'You dont have to actually download the zip, but this makes the download URL available for portage to fetch..'
+	einfo ''
 	if use xinetd; then
 		ewarn ''
 		ewarn 'BIG FAT WARNING: You have enabled the xinetd USE flag.'
@@ -69,6 +73,16 @@ pkg_pretend() {
 	fi
 }
 
+src_unpack() {
+	default
+	if use doc; then
+		mkdir ${WORKDIR}/doc-generated
+		pushd ${WORKDIR}/doc-generated 2>/dev/null || die "pushd failed."
+		unpack "${FILESDIR}"/man_generated.tar.xz
+		unpack "${FILESDIR}"/help_generated.tar.xz
+		popd
+	fi
+}
 src_prepare() {
 	default
 	sed -i -e "s#docsdir = \$(CDE_INSTALLATION_TOP)#docsdir = /usr/share/doc/${P}#" Makefile.am || die 'sed failed'
@@ -129,11 +143,36 @@ src_install() {
 	insinto /usr/share/xsessions
 	doins "${FILESDIR}"/CDE.desktop
 	if use doc; then
-		einfo ''
-		einfo 'This version does not support CDE Style documentation or man pages yet.'
-		einfo "But you can browse the included guides in PDF format in ${DOCDIR}"
-		einfo ''
 		dodoc doc/C/pdf/*
+		pushd ${WORKDIR}/doc-generated 2>/dev/null || die "pushd failed"
+		rm man/man1/ksh.1	# file collision with app-shells/ksh
+		# convert from SYSV to BSD Conventions:
+		# 1 -> 1	General commands
+		# 1m -> 8	System administration commands and daemons
+		# 3 -> 3	library functions
+		# 4 -> 5	File formats and conventions
+		# 5 -> 7	Miscellanea
+		# 6 -> 6	Games and screensavers
+		mv man/man1m man/man8
+		for f in man/man8/*.1m; do mv ${f} ${f%%.*}.8; done
+		mv man/man5 man/man7
+		for f in man/man7/*.5; do mv ${f} ${f%%.*}.7; done
+		mv man/man4 man/man5
+		for f in man/man5/*.4; do mv ${f} ${f%%.*}.5; done
+		for d in man{1,3,{5..8}}; do
+			for f in man/${d}/*; do
+				einfo installing $f
+				doman ${f}
+			done
+		done
+		dodir /usr/dt/appconfig/help
+		dodir /usr/dt/appconfig/help/C
+		insinto /usr/dt/appconfig/help/C
+		doins help-sdl/*
+		rm help/Makefile
+		rm help/Imakefile
+		doins -r help/*
+		popd
 	fi
 	if use examples; then
 		dodoc -r examples

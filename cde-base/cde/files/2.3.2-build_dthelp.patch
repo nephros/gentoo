@@ -92,3 +92,4 @@ diff -Naur a/programs/dthelp/dthelpgen/Makefile.am b/programs/dthelp/dthelpgen/M
 +SUBDIRS = dthelpview dthelpgen dthelpdemo
 +
 +#NOTYET  = parser dthelpprint
+
