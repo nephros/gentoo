@@ -10,7 +10,7 @@ DESCRIPTION="The Common Desktop Environment, the first UNIX desktop environment"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv/"
 SRC_URI=""
 
-inherit git-2
+inherit git-r3
 
 LICENSE="LGPL-2"
 SLOT="0"
@@ -31,11 +31,9 @@ DEPEND="x11-libs/libXt
 		media-libs/freetype
 		dev-lang/tcl
 		app-shells/ksh
-		sys-devel/m4
 		app-arch/ncompress
 		media-fonts/font-bitstream-100dpi
 		net-nds/rpcbind
-		sys-devel/bison
 		x11-misc/xbitmaps"
 RDEPEND="${DEPEND}"
 

@@ -5,10 +5,13 @@ EAPI=7
 
 inherit autotools
 
-MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
+#MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
+#MY_COMMIT="04b2d175aa9ae156b280dc62a7477eccfcdb0c4e"
+MY_COMMIT="2dd656b919d5a6a78e4105d46c6b8592908c4fd8"
+MY_PV=$(ver_cut 0-3)
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
-SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${P}_${MY_COMMIT}.zip"
+SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cdesktopenv-code-${MY_COMMIT}.zip -> ${PN}-${MY_PV}_${MY_COMMIT}.zip"
 
 LICENSE="LGPL-2+"
 SLOT="0"
@@ -38,19 +41,18 @@ BDEPEND="
 	app-shells/ksh
 	"
 PATCHES=(
-	"${FILESDIR}"/2.3.1_pre20200106-to-${PV}.patch
-	"${FILESDIR}"/CVE-2020-2696_VU_308289_6b3224.patch
-	"${FILESDIR}"/${PV}-fix_prefix_vs_top_dir.patch
-	"${FILESDIR}"/${PV}-disable_japanese.patch
-	"${FILESDIR}"/${PV}-XkbKeycodeToKeysym.patch
-	"${FILESDIR}"/${PV}-build_additional_programs.patch
-	"${FILESDIR}"/${PV}-build_dthelp.patch
-	"${FILESDIR}"/${PV}-build_nsgmls.patch
+	"${FILESDIR}"/${MY_PV}-fix_prefix_vs_top_dir.patch
+	"${FILESDIR}"/${MY_PV}-disable_japanese.patch
+	"${FILESDIR}"/${MY_PV}-XkbKeycodeToKeysym.patch
+	"${FILESDIR}"/${MY_PV}-build_additional_programs.patch
+	"${FILESDIR}"/${MY_PV}-build_dthelp.patch
+	"${FILESDIR}"/${MY_PV}-build_nsgmls.patch
 )
 
 S="${WORKDIR}"/cdesktopenv-code-${MY_COMMIT}/${PN}
 
 pkg_pretend() {
+	# this should really go into a pkg_nofetch() block, however the download actually does work, so lets keep this here:
 	einfo ''
 	einfo "NOTE: In case the download fails, please go to https://sourceforge.net/p/cdesktopenv/code/ci/${MY_COMMIT}/tree/"
 	einfo 'and click the "Download Snapshot" link. Then run emerge again.'
@@ -84,6 +86,7 @@ src_unpack() {
 	fi
 }
 src_prepare() {
+	sed -i -e "s#\[2.3.1\], [jon@radscan.com])#\[${PVR}_${MY_COMMIT}\], [gentoo@nephros.org])#" configure.ac || die 'sed failed'
 	default
 	sed -i -e "s#docsdir = \$(CDE_INSTALLATION_TOP)#docsdir = /usr/share/doc/${P}#" Makefile.am || die 'sed failed'
 	eautoreconf
@@ -103,7 +106,7 @@ src_configure() {
 		$(use_enable l10n_ja japanese) \
 		$my_econf
 
-	eapply "${FILESDIR}"/${PV}-link_libtrcp.patch
+	eapply "${FILESDIR}"/${MY_PV}-link_libtrcp.patch
 }
 
 src_compile() {
@@ -137,6 +140,7 @@ src_install() {
 	dosym /usr/dt/bin/dtexec /usr/bin/dtexec
 	insinto /usr/dt
 	newbin "${FILESDIR}"/startcde.sh startcde
+	newbin "${FILESDIR}"/startcde_windowed.sh startcde_windowed
 	doins copyright # needed by dtgreeter splash
 	exeinto /etc/X11/Sessions
 	newexe "${FILESDIR}"/Xsession CDE
