@@ -15,5 +15,6 @@
 <use>
 	<flag name="l10n_ja">Enable Japanese language support</flag>
 	<flag name="tools">Install additional tools, like desktop2dt</flag>
+	<flag name="system_sgml">Use system libnsgml for SGML tasks (WIP!)</flag>
 </use>
 </pkgmetadata>

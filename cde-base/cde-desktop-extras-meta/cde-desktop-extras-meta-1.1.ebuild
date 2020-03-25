@@ -8,7 +8,7 @@ HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
 SRC_URI=""
 
 SLOT="0"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86"
 IUSE="vi emacs calendar mozilla"
 LICENSE="metapackage"
 
@@ -20,8 +20,8 @@ DEPEND="
 		)
 	!mozilla? ( www-client/dillo )
 	calendar? ( x11-misc/xcalendar[motif] app-misc/remind[tk] )
-	cde-base/desktop-approots
-	cde-base/usb-icons
+	!cde-base/desktop-approots
+	!cde-base/usb-icons
 	emacs? ( || ( app-editors/emacs:*[motif] app-editors/xemacs[motif] ) )
 	media-gfx/xv
 	media-sound/xmms2

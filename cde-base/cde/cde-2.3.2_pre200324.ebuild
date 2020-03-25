@@ -5,9 +5,7 @@ EAPI=7
 
 inherit autotools
 
-#MY_COMMIT="1aaf63f2a01b8c78e9c9fbeda4ddefeb2c5afa68"
-#MY_COMMIT="04b2d175aa9ae156b280dc62a7477eccfcdb0c4e"
-MY_COMMIT="2dd656b919d5a6a78e4105d46c6b8592908c4fd8"
+MY_COMMIT="b64d91d5a942b0b7fcf9b94a38b362389e3c9294"
 MY_PV=$(ver_cut 0-3)
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
@@ -16,7 +14,7 @@ SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cd
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X -xinetd -doc tools l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples"
+IUSE="X -xinetd -doc tools l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples system_sgml"
 
 DEPEND="
 	x11-base/xorg-x11
@@ -39,6 +37,7 @@ BDEPEND="
 	app-arch/ncompress
 	x11-apps/bdftopcf
 	app-shells/ksh
+	system_sgml? ( app-text/opensp )
 	"
 PATCHES=(
 	"${FILESDIR}"/${MY_PV}-disable_japanese.patch
@@ -71,10 +70,11 @@ pkg_pretend() {
 }
 
 src_unpack() {
+	use system_sgml && PATCHES+=( "${FILESDIR}"/${MY_PV}-unbuild_nsgmls.patch )
 	default
 	if use doc; then
-		mkdir ${WORKDIR}/doc-generated
-		pushd ${WORKDIR}/doc-generated 2>/dev/null || die "pushd failed."
+		mkdir "${WORKDIR}"/doc-generated
+		pushd "${WORKDIR}"/doc-generated 2>/dev/null || die "pushd failed."
 		unpack "${FILESDIR}"/man_generated.tar.xz
 		unpack "${FILESDIR}"/help_generated.tar.xz
 		popd
@@ -85,6 +85,7 @@ src_prepare() {
 	default
 	sed -i -e "s#docsdir = \$(CDE_INSTALLATION_TOP)#docsdir = /usr/share/doc/${P}#" Makefile.am || die 'sed failed'
 	eautoreconf
+	use system_sgml && rm -r programs/nsgmls
 }
 
 src_configure() {
@@ -101,7 +102,6 @@ src_configure() {
 		$(use_enable l10n_ja japanese) \
 		$my_econf
 
-	#eapply "${FILESDIR}"/${MY_PV}-link_libtrcp.patch
 }
 
 src_compile() {
@@ -119,7 +119,8 @@ src_install() {
 	dosym /var/tmp/ /var/dt/tmp
 	keepdir /var/spool/calendar
 	# keep the _TOP variables defined in case of unclean source files:
-	emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
+	#emake -j1 CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
+	emake CDE_INSTALLATION_TOP=/usr/dt CDE_CONFIGURATION_TOP=/etc/dt DESTDIR="${D}" install || die "install failed."
 
 	# fix paths, /usr/config we don't have:
 	for f in dtspcdenv sys.dtprofile Xaccess Xconfig Xfailsafe Xreset Xservers Xsetup Xstartup; do
@@ -143,7 +144,7 @@ src_install() {
 	doins "${FILESDIR}"/CDE.desktop
 	if use doc; then
 		dodoc doc/C/pdf/*
-		pushd ${WORKDIR}/doc-generated 2>/dev/null || die "pushd failed"
+		pushd "${WORKDIR}"/doc-generated 2>/dev/null || die "pushd failed"
 		rm man/man1/ksh.1	# file collision with app-shells/ksh
 		# convert from SYSV to BSD Conventions:
 		# 1 -> 1	General commands
@@ -175,6 +176,10 @@ src_install() {
 	fi
 	if use examples; then
 		dodoc -r examples
+	fi
+	if use system_sgml; then
+		rm "${D}"/usr/dt/bin/nsgmls
+		dosym /usr/bin/onsgmls /usr/dt/bin/nsgmls
 	fi
 	if use tools; then
 		dobin "${FILESDIR}"/desktop2dt.sh

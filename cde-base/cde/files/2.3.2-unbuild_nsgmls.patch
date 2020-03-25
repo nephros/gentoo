@@ -1,0 +1,26 @@
+diff -ur a/configure.ac b/configure.ac
+--- a/configure.ac	2020-03-24 15:23:14.715204934 +0100
++++ b/configure.ac	2020-03-24 15:57:11.499713104 +0100
+@@ -514,8 +514,6 @@
+ programs/dthelp/dthelpgen/Makefile
+ programs/dthelp/dthelpdemo/Makefile
+ 
+-programs/nsgmls/Makefile
+-
+ programs/dtmail/Makefile
+ programs/dtmail/dtmail/Makefile
+ programs/dtmail/MotifApp/Makefile
+
+diff -ur a/programs/Makefile.am b/programs/Makefile.am
+--- a/programs/Makefile.am	2020-03-23 20:51:01.000000000 +0100
++++ b/programs/Makefile.am	2020-03-24 15:57:36.294137392 +0100
+@@ -5,6 +5,6 @@
+ 	dtaction dtspcd dtscreen dtcm dtsearchpath palettes \
+ 	dtappintegrate dtprintegrate dtconfig dtcreate dtprintinfo fontaliases \
+ 	dtdspmsg dtimsstart dtpdm dtsr dtpdmd types \
+-	tttypes util dtopen localized dthelp nsgmls
++	tttypes util dtopen localized dthelp
+ 
+-# NOTYET = dtksh dtappbuilder dtdocbook dtinfo ttsnoop 
++# NOTYET = dtksh dtappbuilder dtdocbook dtinfo ttsnoop nsgmls
+
