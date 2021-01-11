@@ -5,7 +5,7 @@ EAPI=7
 
 inherit autotools
 
-MY_COMMIT="b64d91d5a942b0b7fcf9b94a38b362389e3c9294"
+MY_COMMIT="e18e2480dc950ab4cfc19ce9e1fd5918f35dbbad"
 MY_PV=$(ver_cut 0-3)
 DESCRIPTION="The Common Desktop Environment, the classic UNIX desktop (autotools version)"
 HOMEPAGE="https://sourceforge.net/projects/cdesktopenv"
@@ -14,7 +14,7 @@ SRC_URI="https://sourceforge.net/code-snapshots/git/c/cd/cdesktopenv/code.git/cd
 LICENSE="LGPL-2+"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="X -xinetd -doc tools l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples system_sgml"
+IUSE="X -xinetd -doc tools l10n_en l10n_de l10n_it l10n_fr l10n_es l10n_ja examples"
 
 DEPEND="
 	x11-base/xorg-x11
@@ -37,7 +37,6 @@ BDEPEND="
 	app-arch/ncompress
 	x11-apps/bdftopcf
 	app-shells/ksh
-	system_sgml? ( app-text/opensp )
 	"
 PATCHES=(
 	"${FILESDIR}"/${MY_PV}-disable_japanese.patch
@@ -81,7 +80,6 @@ pkg_pretend() {
 }
 
 src_unpack() {
-	use system_sgml && PATCHES+=( "${FILESDIR}"/${MY_PV}-unbuild_nsgmls.patch )
 	default
 	if use doc; then
 		mkdir "${WORKDIR}"/doc-generated
@@ -96,7 +94,6 @@ src_prepare() {
 	default
 	sed -i -e "s#docsdir = \$(CDE_INSTALLATION_TOP)#docsdir = /usr/share/doc/${P}#" Makefile.am || die 'sed failed'
 	eautoreconf
-	use system_sgml && rm -r programs/nsgmls
 }
 
 src_configure() {
@@ -187,10 +184,6 @@ src_install() {
 	fi
 	if use examples; then
 		dodoc -r examples
-	fi
-	if use system_sgml; then
-		rm "${D}"/usr/dt/bin/nsgmls
-		dosym /usr/bin/onsgmls /usr/dt/bin/nsgmls
 	fi
 	if use tools; then
 		dobin "${FILESDIR}"/desktop2dt.sh
